@@ -1,0 +1,21 @@
+PRESENTIS EN LIGNE (gratuit) -> application Android (gratuit via PWABuilder)
+
+A. METTRE LE SERVEUR EN LIGNE (Render, gratuit, sans carte bancaire)
+ 1. Créer un compte gratuit sur github.com, puis un dépôt "presentis" et y envoyer TOUS les fichiers de ce dossier
+    (bouton "Add file > Upload files").
+ 2. Créer un compte sur render.com > New > Blueprint (ou Web Service) > choisir le dépôt.
+    Commande de démarrage : node server.js   |   Plan : Free.
+ 3. Après quelques minutes, tu obtiens une adresse https://presentis-xxxx.onrender.com
+ -> Professeur : ouvre  https://presentis-xxxx.onrender.com/app
+ -> Élèves     : lien  https://presentis-xxxx.onrender.com/eleve  + le mot de passe de la classe.
+ Note : l'offre gratuite s'endort après 15 min sans visite (premier chargement ~30 s). Si le serveur redémarre,
+ ton app ré-enregistre automatiquement le mot de passe ; seules les fiches pas encore reçues peuvent être perdues.
+ Ouvre l'app prof une fois par jour pour recevoir les fiches.
+
+B. CRÉER L'APK / AAB ANDROID (gratuit)
+ 1. Va sur https://www.pwabuilder.com , colle ton adresse https://presentis-xxxx.onrender.com/app
+ 2. "Package for stores" > Android > Download. Tu reçois un .apk (à installer/partager directement) et un .aab.
+ 3. Play Store (facultatif) : compte développeur Google = 25 $ une seule fois + politique de confidentialité.
+    Sans payer : partage simplement l'APK, ou "Ajouter à l'écran d'accueil" dans Chrome.
+
+Sécurité : chaque professeur a une clé secrète (générée dans l'app) ; les élèves ne peuvent ni lire ni supprimer les fiches des autres.
