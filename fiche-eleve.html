@@ -15,10 +15,10 @@ background:radial-gradient(900px 500px at 15% -10%,rgba(255,210,31,.22),transpar
 h1{font-size:22px;margin:6px 0 4px;text-align:center}.s{color:var(--mut);font-size:14px;margin:0 0 6px;text-align:center}
 .fld{margin-top:14px}
 label{display:block;font-size:13px;font-weight:600;color:var(--mut);margin:0 0 5px}
-input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--bd);background:#0c0e13;color:#fff;font:inherit;outline:0;transition:border-color .15s,box-shadow .15s}
-input:focus{border-color:var(--y);box-shadow:0 0 0 3px rgba(255,210,31,.18)}
-input.bad{border-color:var(--ko);box-shadow:0 0 0 3px rgba(255,107,107,.15)}
-input.good{border-color:rgba(74,222,128,.6)}
+input,select{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--bd);background:#0c0e13;color:#fff;font:inherit;outline:0;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus{border-color:var(--y);box-shadow:0 0 0 3px rgba(255,210,31,.18)}
+input.bad,select.bad{border-color:var(--ko);box-shadow:0 0 0 3px rgba(255,107,107,.15)}
+input.good,select.good{border-color:rgba(74,222,128,.6)}
 #m{text-transform:uppercase;letter-spacing:1.5px;font-variant-numeric:tabular-nums}
 .r{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.r .fld{margin-top:14px;min-width:0}
 .fe{display:block;color:var(--ko);font-size:12.5px;min-height:0;margin-top:5px}.fe:empty{display:none}
@@ -50,9 +50,12 @@ textarea{width:100%;height:96px;margin-top:8px;padding:10px;border-radius:12px;b
 <h1 id="h"></h1><p class="s"><span id="info"></span><span id="sub"></span></p>
 <div class="fld"><label id="ln" for="n"></label><input id="n" autocomplete="name" maxlength="60" enterkeyhint="next"><span class="fe" id="fn"></span></div>
 <div class="fld"><label id="lm" for="m"></label><input id="m" maxlength="14" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="R123456789" enterkeyhint="next"><span class="hint" id="hm"></span><span class="fe" id="fm"></span></div>
+<div class="r" style="display:grid;grid-template-columns:1fr 1.7fr;gap:10px"><div class="fld"><label id="lsx" for="sx"></label><select id="sx"><option value=""></option><option value="M"></option><option value="F"></option></select><span class="fe" id="fsx"></span></div>
+<div class="fld"><label id="ldb" for="db"></label><input id="db" type="date" min="1990-01-01" enterkeyhint="next"><span class="fe" id="fdb"></span></div></div>
 <div class="r"><div class="fld"><label id="la" for="a"></label><input id="a" type="number" inputmode="numeric" min="5" max="30" enterkeyhint="next"><span class="fe" id="fa"></span></div>
 <div class="fld"><label id="lp" for="p"></label><input id="p" type="text" inputmode="decimal" enterkeyhint="next"><span class="fe" id="fp"></span></div>
 <div class="fld"><label id="lt" for="t"></label><input id="t" type="number" inputmode="numeric" min="80" max="230" enterkeyhint="done"><span class="fe" id="ft"></span></div></div>
+<div class="fld"><label id="ltg" for="tg"></label><input id="tg" type="tel" inputmode="tel" autocomplete="off" maxlength="20" placeholder="06 12 34 56 78" enterkeyhint="done"><span class="fe" id="ftg"></span></div>
 <div class="imc" id="imc"></div>
 <p class="e" id="e" role="alert" aria-live="polite"></p>
 <button id="bv" onclick="sGo()"></button><a class="bk" id="sec" onclick="sSecours()" style="display:none"></a>
@@ -77,15 +80,22 @@ var SXA={fr:{lgh:'Connexion élève',lgs:'Entre le mot de passe que ton professe
 en:{lgh:'Student login',lgs:'Enter the password your teacher gave you.',lgl:'Teacher’s password',lgb:'Enter',sub:'Fill in your form: it reaches your teacher automatically.',epw:'Wrong password.',enet:'Could not check the password. Open the link your teacher gave you (same Wi-Fi) and try again.',elim:'Too many attempts. Wait a minute.',esend:'Could not send. Check the Wi-Fi and try again.',bsec:'Send by code (backup)'},
 ar:{lgh:'دخول التلميذ',lgs:'أدخل كلمة المرور التي أعطاك إياها أستاذك.',lgl:'كلمة مرور الأستاذ',lgb:'دخول',sub:'املأ بطاقتك: تصل إلى أستاذك تلقائيًا.',epw:'كلمة المرور غير صحيحة.',enet:'تعذر التحقق من كلمة المرور. افتح الرابط الذي أعطاك إياه أستاذك (نفس شبكة الواي فاي) وأعد المحاولة.',elim:'محاولات كثيرة. انتظر دقيقة.',esend:'تعذر الإرسال. تحقق من الواي فاي وأعد المحاولة.',bsec:'إرسال بالرمز (احتياطي)'}};
 ['fr','en','ar'].forEach(function(l){Object.keys(SXA[l]).forEach(function(k){SX[l][k]=SXA[l][k]})});
-var SF=['n','m','a','p','t'],SE={n:'en',m:'em',a:'ea',p:'ep',t:'et'};
+var SXB={fr:{lsx:'Sexe',sm:'Garçon',sf:'Fille',ldb:'Date de naissance',ltg:'Téléphone du tuteur',esx:'Choisis garçon ou fille.',edb:'Date de naissance invalide.',etg:'Numéro invalide (8 à 15 chiffres).'},
+en:{lsx:'Gender',sm:'Boy',sf:'Girl',ldb:'Date of birth',ltg:'Guardian’s phone',esx:'Choose boy or girl.',edb:'Invalid date of birth.',etg:'Invalid number (8 to 15 digits).'},
+ar:{lsx:'الجنس',sm:'ذكر',sf:'أنثى',ldb:'تاريخ الازدياد',ltg:'هاتف ولي الأمر',esx:'اختر ذكر أو أنثى.',edb:'تاريخ ازدياد غير صالح.',etg:'رقم غير صالح (من 8 إلى 15 رقما).'}};
+['fr','en','ar'].forEach(function(l){Object.keys(SXB[l]).forEach(function(k){SX[l][k]=SXB[l][k]})});
+var SF=['n','m','sx','db','a','p','t','tg'],SE={n:'en',m:'em',sx:'esx',db:'edb',a:'ea',p:'ep',t:'et',tg:'etg'};
 function sL(l){SLG=l;var t=SX[l];document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.title='Presentis '+t.sfx;
-['sfx','h','sub','dh','ds','dnx','ln','lm','hm','la','lp','lt','bv','okh','oks','bb','bw','bd','bc','lgh','lgs','lgl','lgb'].forEach(function(k){$(k).textContent=t[k]});
-document.querySelectorAll('.sl button').forEach(function(b){b.classList.toggle('on',b.dataset.l===l)});
+['sfx','h','sub','dh','ds','dnx','ln','lm','hm','lsx','ldb','ltg','la','lp','lt','bv','okh','oks','bb','bw','bd','bc','lgh','lgs','lgl','lgb'].forEach(function(k){$(k).textContent=t[k]});
+var so=$('sx').options;so[0].text='—';so[1].text=t.sm;so[2].text=t.sf;document.querySelectorAll('.sl button').forEach(function(b){b.classList.toggle('on',b.dataset.l===l)});
 $('sec').textContent=t.bsec;var b=document.querySelector('.bk:not(#sec)');if(b)b.textContent=t.bk;sImc();sCnt();
 try{localStorage.setItem('presentia-lang',l)}catch(e){}}
 function sV(k){var v=$(k).value,t=SX[SLG];
 if(k==='n'){v=v.trim().replace(/\s+/g,' ');return v.length>=3&&/^[\p{L}][\p{L}\s'’.\-]*$/u.test(v)}
 if(k==='m'){return /^[A-Z]\d{9}$/.test(v.trim().toUpperCase())}
+if(k==='sx')return v==='M'||v==='F';
+if(k==='db'){if(!/^\d{4}-\d{2}-\d{2}$/.test(v))return false;var dd=new Date(v),ag=(Date.now()-dd.getTime())/31557600000;return !isNaN(dd.getTime())&&ag>=5&&ag<=30}
+if(k==='tg'){var dg=String(v).replace(/\D/g,'');return /^[+0-9\s.\-()]+$/.test(v)&&dg.length>=8&&dg.length<=15}
 var x=+String(v).replace(',','.');
 if(k==='a')return v!==''&&x>=5&&x<=30;if(k==='p')return v!==''&&x>=10&&x<=200;return v!==''&&x>=80&&x<=230}
 function sMark(k,show){var ok=sV(k),i=$(k);i.classList.toggle('bad',show&&!ok);i.classList.toggle('good',ok&&$(k).value!=='');
@@ -97,7 +107,7 @@ function sSave(){var o={};SF.forEach(function(k){o[k]=$(k).value});try{sessionSt
 function sGo(){var t=SX[SLG],e=$('e'),all=true;SF.forEach(function(k){if(!sMark(k,true))all=false});
 if(!all){e.textContent=t.er;var f=SF.filter(function(k){return !sV(k)})[0];if(f)$(f).focus();return}
 var n=$('n').value.trim().replace(/\s+/g,' '),m=$('m').value.trim().toUpperCase(),a=+$('a').value,p=+String($('p').value).replace(',','.'),h=+$('t').value;
-e.textContent='';var o={n:n,m:m,a:a,p:p,t:h,d:new Date().toISOString().slice(0,10)};
+e.textContent='';var o={n:n,m:m,s:$('sx').value,b:$('db').value,a:a,p:p,t:h,g:$('tg').value.trim().replace(/\s+/g,' '),d:new Date().toISOString().slice(0,10)};
 SCODE='PRS1:'+btoa(unescape(encodeURIComponent(JSON.stringify(o))));$('k').value=SCODE;$('f').style.display='none';$('sec').style.display='none';
 function done(){try{sessionStorage.setItem('pres-n',(+sessionStorage.getItem('pres-n')||0)+1);sessionStorage.removeItem('pres-draft')}catch(x){}sCnt();$('dn').style.display='block'}
 sSend(o).then(done).catch(function(x){if(x==='pw'){try{sessionStorage.removeItem('pres-pw')}catch(y){}SPW='';$('lg').style.display='block';$('epw').textContent=t.epw;return}
@@ -110,22 +120,22 @@ if(location.protocol.indexOf('http')===0){var bt=$('lgb');bt.disabled=true;
 fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pw:pw})}).then(function(r){if(r.status===429)throw'lim';return r.json()}).then(function(j){bt.disabled=false;if(j&&j.ok)sUnlock(pw,'srv');else e.textContent=t.epw}).catch(function(x){bt.disabled=false;e.textContent=x==='lim'?t.elim:t.enet});return}
 e.textContent=Object.keys(R).length?t.epw:t.enet}
 function sUnlock(pw,mode){SPW=pw;SMODE=mode;try{sessionStorage.setItem('pres-pw',pw+'|'+mode)}catch(x){}$('lg').style.display='none';$('f').style.display='block';$('pw').value='';$('n').focus()}
-function sPutLocal(k,o){try{if(localStorage.getItem(k)===null)return false;var D=JSON.parse(localStorage.getItem(k))||{n:0,names:[],log:[]};D.fiches=D.fiches||[];var f={n:o.n,m:o.m,a:o.a,p:o.p,t:o.t,d:o.d},i=-1;D.fiches.forEach(function(x,j){if(x.m===f.m)i=j});if(i>-1)D.fiches[i]=f;else D.fiches.push(f);
-var nm=function(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim()},q=-1;D.names=D.names||[];for(var j=0;j<(D.n||0);j++)if(nm(D.names[j])===nm(f.n))q=j;if(q<0&&(D.n||0)<200){D.names[D.n||0]=f.n;D.n=(D.n||0)+1}
+function sPutLocal(k,o){try{if(localStorage.getItem(k)===null)return false;var D=JSON.parse(localStorage.getItem(k))||{n:0,names:[],log:[]};D.fiches=D.fiches||[];var f={n:o.n,m:o.m,s:o.s,b:o.b,a:o.a,p:o.p,t:o.t,g:o.g,d:o.d},i=-1;D.fiches.forEach(function(x,j){if(x.m===f.m)i=j});if(i>-1)D.fiches[i]=f;else D.fiches.push(f);
+var nm=function(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[\u064B-\u065F\u0670]/g,'').replace(/[^\p{L}\p{N}]+/gu,' ').trim()},q=-1;D.names=D.names||[];for(var j=0;j<(D.n||0);j++)if(nm(D.names[j])===nm(f.n))q=j;if(q<0&&(D.n||0)<200){D.names[D.n||0]=f.n;D.n=(D.n||0)+1}
 localStorage.setItem(k,JSON.stringify(D));return true}catch(e){return false}}
 function sSend(o){if(SMODE==='local'){var R=sRooms()[SPW];return(R&&sPutLocal(R.k,o))?Promise.resolve(true):Promise.reject('pw')}
-return fetch('/api/fiche',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pw:SPW,n:o.n,m:o.m,a:o.a,p:o.p,t:o.t})}).then(function(r){if(r.status===403)throw'pw';if(!r.ok)throw 0;return true})}
+return fetch('/api/fiche',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pw:SPW,n:o.n,m:o.m,s:o.s,b:o.b,a:o.a,p:o.p,t:o.t,g:o.g})}).then(function(r){if(r.status===403)throw'pw';if(!r.ok)throw 0;return true})}
 function sSecours(){$('f').style.display='none';$('sec').style.display='none';$('o').style.display='block'}
 function sNext(){SF.forEach(function(k){$(k).value='';$(k).classList.remove('bad','good');$('f'+k).textContent=''});$('imc').style.display='none';$('e').textContent='';$('dn').style.display='none';$('f').style.display='block';$('n').focus()}
 function sBack(){$('o').style.display='none';$('f').style.display='block'}
 function sCp(){var k=$('k');k.select();try{navigator.clipboard.writeText(SCODE)}catch(x){document.execCommand('copy')}$('bc').textContent=SX[SLG].bc2}
 function sWa(){window.open('https://wa.me/?text='+encodeURIComponent(SCODE),'_blank')}
 function sDl(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([SCODE],{type:'text/plain'}));a.download='fiche-'+$('m').value.toUpperCase()+'.txt';a.click()}
-SF.forEach(function(k,ix){var el=$(k);el.addEventListener('input',function(){if(k==='m')el.value=el.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,10);if(el.classList.contains('bad')||el.classList.contains('good'))sMark(k,el.classList.contains('bad'));if(k==='p'||k==='t')sImc();sSave()});
+SF.forEach(function(k,ix){var el=$(k);el.addEventListener('input',function(){if(k==='m')el.value=el.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,10);if(el.classList.contains('bad')||el.classList.contains('good'))sMark(k,el.classList.contains('bad'));if(k==='tg')el.value=el.value.replace(/[^0-9+\s.\-()]/g,'').slice(0,20);if(k==='db'&&sV('db')){var A=Math.floor((Date.now()-new Date(el.value).getTime())/31557600000);if(A>=5&&A<=30){$('a').value=A;sMark('a',false)}}if(k==='p'||k==='t')sImc();sSave()});
 el.addEventListener('blur',function(){if(el.value!=='')sMark(k,true)});
 el.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();if(ix<4)$(SF[ix+1]).focus();else sGo()}})});
 try{var dr=JSON.parse(sessionStorage.getItem('pres-draft')||'null');if(dr)SF.forEach(function(k){if(dr[k]!=null)$(k).value=dr[k]});sImc()}catch(e){}
 $('pw').addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();sLogin()}});
 (function(){var ok=false;try{var sp=sessionStorage.getItem('pres-pw');if(sp){var q=sp.split('|');if(q[1]==='local'?sRooms()[q[0]]:q[1]==='srv'){SPW=q[0];SMODE=q[1];ok=true}}}catch(e){}$(ok?'f':'lg').style.display='block'})();
-var l0='fr';try{l0=localStorage.getItem('presentia-lang')||'fr'}catch(e){}sL(SX[l0]?l0:'fr');
+$('db').max=new Date().toISOString().slice(0,10);var l0='fr';try{l0=localStorage.getItem('presentia-lang')||'fr'}catch(e){}sL(SX[l0]?l0:'fr');
 </script></body></html>

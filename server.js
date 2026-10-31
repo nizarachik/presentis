@@ -18,7 +18,11 @@ function file(res,names){for(const n of names){const p=path.join(DIR,n);if(fs.ex
 function body(req,cb){let s='';req.on('data',c=>{s+=c;if(s.length>6000){req.destroy()}});req.on('end',()=>{try{cb(JSON.parse(s))}catch(e){cb(null)}})}
 function valid(o){if(!o||typeof o!=='object')return null;const n=String(o.n||'').trim().replace(/\s+/g,' ').slice(0,60),m=String(o.m||'').trim().toUpperCase(),a=+o.a,p=+o.p,t=+o.t;
 if(n.length<3||!/^[\p{L}][\p{L}\s'’.\-]*$/u.test(n)||!/^[A-Z]\d{9}$/.test(m)||!(a>=5&&a<=30)||!(p>=10&&p<=200)||!(t>=80&&t<=230))return null;
-return{n,m,a,p,t,d:new Date().toISOString().slice(0,10)}}
+const r={n,m,a,p,t,d:new Date().toISOString().slice(0,10)};
+ if(o.s!==undefined&&o.s!==''){if(o.s!=='M'&&o.s!=='F')return null;r.s=o.s}
+ if(o.b!==undefined&&o.b!==''){if(!/^\d{4}-\d{2}-\d{2}$/.test(String(o.b))||isNaN(Date.parse(o.b)))return null;r.b=String(o.b)}
+ if(o.g!==undefined&&o.g!==''){const g=String(o.g).trim();if(!/^[+0-9\s.\-()]{8,20}$/.test(g)||g.replace(/\D/g,'').length<8||g.replace(/\D/g,'').length>15)return null;r.g=g}
+ return r}
 http.createServer((req,res)=>{
  const url=req.url.split('?')[0],local=isLocal(req)&&!req.headers['x-forwarded-for'],ip=String(req.headers['x-forwarded-for']||req.socket.remoteAddress).split(',')[0].trim();
  const TK=b=>crypto.createHash('sha256').update('tk:'+String((b&&b.tk)||'')).digest('hex'),okT=(r,b)=>!!r&&(r.tk?r.tk===TK(b):local);
@@ -48,7 +52,7 @@ http.createServer((req,res)=>{
    console.log('Nouvelle fiche :',f.n);send(res,200,'{"ok":true}',null,cors)})}
  // le professeur récupère les fiches de sa classe
  if(req.method==='POST'&&url==='/api/pull'){return body(req,b=>{const h=H(b&&b.pw);if(!okT(rooms[h],b))return send(res,403,'{}',null,cors);
-  send(res,200,JSON.stringify(db.filter(x=>x.room===h&&x.pending).map(x=>({n:x.n,m:x.m,a:x.a,p:x.p,t:x.t,d:x.d}))),null,cors)})}
+  send(res,200,JSON.stringify(db.filter(x=>x.room===h&&x.pending).map(x=>({n:x.n,m:x.m,s:x.s,b:x.b,a:x.a,p:x.p,t:x.t,g:x.g,d:x.d}))),null,cors)})}
  if(req.method==='POST'&&url==='/api/ack'){return body(req,b=>{const h=H(b&&b.pw),ids=(b&&b.ids)||[];if(!okT(rooms[h],b))return send(res,403,'{}',null,cors);db.forEach(x=>{if(x.room===h&&ids.includes(x.m))x.pending=false});save();send(res,200,'{"ok":true}',null,cors)})}
  send(res,404,'Page introuvable','text/plain; charset=utf-8')
 }).listen(PORT,'0.0.0.0',()=>{
